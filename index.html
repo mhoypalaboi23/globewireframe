@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="app.css">
+
+</head>
+<body>
+    <div id="globeContainer" class="mGlobe"></div>
+
+    <div class="mTypingWrapper mStart mEnd">
+       <div class="mTypingInner">
+           <div class="mTypingStart"></div>
+            <div class="mTypingAnimation">
+                building ...
+            </div>
+       </div>
+    </div>
+</body>
+
+<script type="module">
+   import GlobeWireFrame from './globeWireFrame.js';
+   
+   document.addEventListener('DOMContentLoaded', () => {
+
+        /*  ======= Globe Wireframe ======= */
+        const globeContainer = document.getElementById('globeContainer');
+        GlobeWireFrame.createGlobe(globeContainer, {
+            width: window.innerWidth,
+            height: window.innerHeight,
+        });
+
+
+        /* ========= Typing animation ===== */
+        const typingWrapper = document.querySelector('.mTypingWrapper');
+
+        if(typingWrapper) {
+            setTimeout(() => {
+                typingWrapper.classList.remove('mStart');
+            }, 2000);
+        }
+
+
+    });
+</script>
+</html>
