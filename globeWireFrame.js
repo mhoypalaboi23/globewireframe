@@ -199,7 +199,7 @@ export default class GlobeWireFrame {
 
         const graticule = d3
             .geoGraticule()
-            .step([20, 15])
+            .step([30, 15])
             .extent([
                 [-180, -90],
                 [180, 90],
@@ -220,7 +220,10 @@ export default class GlobeWireFrame {
             .attr("class", "graticule")
             .attr("d", wireframe)
             .attr("fill", "none")
-            .attr("stroke", strokeColor)
+            .attr("stroke", (d, i) => {
+                console.log('d', d, i);
+                return strokeColor;
+            })
             .attr("stroke-width", strokeWidth);
 
         globeWireframe
