@@ -2,18 +2,21 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 
 export default class GlobeWireFrame {
-
     /**
      * Add animations to the globe
      * @param {HTMLElement} container - The container element for the globe
      */
     static addAnimations(container) {
-        const style = document.createElement('style');
+        const style = document.createElement("style");
         style.textContent = `
             @keyframes wave {
                 0% {
                     transform: scale(1);
                     opacity: 0.8;
+                }
+                66% {
+                    transform: scale(3);
+                    opacity: 0;
                 }
                 100% {
                     transform: scale(3);
@@ -29,12 +32,17 @@ export default class GlobeWireFrame {
                 10% {
                     opacity: 1;
                 }
-                90% {
+                60% {
                     opacity: 1;
+                    stroke-dashoffset: 0;
+                }
+                65% {
+                    opacity: 0;
+                    stroke-dashoffset: 0;
                 }
                 100% {
-                    stroke-dashoffset: 0;
                     opacity: 0;
+                    stroke-dashoffset: 0;
                 }
             }
             
@@ -51,13 +59,12 @@ export default class GlobeWireFrame {
             }
             
             .animated-line {
-                stroke: #03E0B1;
+                 stroke: #03E0B1;
                 stroke-width: 2px;
                 fill: none;
                 stroke-dasharray: 1000;
                 stroke-dashoffset: 1000;
-                animation: drawLine 4s infinite;
-                
+                animation: drawLine 6s infinite;
             }
             
             // .animated-line-1 {
@@ -82,9 +89,9 @@ export default class GlobeWireFrame {
 
         
             
-            .point-group .wave-ring:nth-child(2) { animation: wave 4s 0.8s infinite; }
-            .point-group .wave-ring:nth-child(3) { animation: wave 4s 1.3s infinite; }
-            .point-group .wave-ring:nth-child(4) { animation: wave 4s 1.8s infinite; }
+            .point-group .wave-ring:nth-child(2) { animation: wave 6s 0.8s infinite; }
+            .point-group .wave-ring:nth-child(3) { animation: wave 6s 1.3s infinite; }
+            .point-group .wave-ring:nth-child(4) { animation: wave 6s 1.8s infinite; }
             
             // .point-group-2 .wave-ring:nth-child(2) { animation: wave 2s 1.6s infinite; }
             // .point-group-2 .wave-ring:nth-child(3) { animation: wave 2s 2.1s infinite; }
@@ -116,7 +123,18 @@ export default class GlobeWireFrame {
      */
     static createGlobe(
         container,
-        { radius, width, height, strokeWidth, strokeColor, circleColor, circleRadius, circleStrokeColor, circleStrokeWidth }
+        {
+            radius,
+            width,
+            height,
+            strokeWidth,
+            strokeColor,
+            circleColor,
+            circleRadius,
+            circleStrokeColor,
+            circleStrokeWidth,
+            dotsPosition
+        }
     ) {
         /* Add default value */
         width = width || 200;
@@ -132,17 +150,17 @@ export default class GlobeWireFrame {
         circleStrokeWidth = circleStrokeWidth || 2;
 
         const northPole = [0, 90];
-        const specificIntersections = [
-            { lat: 30, lng: 0 }, 
-            { lat: 60, lng: -40 }, 
-            { lat: 45, lng: 20 },
-            { lat: 15, lng: 40 },
-            { lat: 15, lng: -60 }
-        ];
+        const specificIntersections = dotsPosition || [];
+
+        // [
+        //     { lat: 60, lng: -40 },
+        //     { lat: 45, lng: 20 },
+        //     { lat: 30, lng: 0 },
+        //     { lat: 15, lng: 40 },
+        //     { lat: 15, lng: -60 },
+        // ]
 
         const tolerance = 0.5; // tolerance in degrees
-
-
 
         // Create the SVG element
         const svg = d3
@@ -205,7 +223,8 @@ export default class GlobeWireFrame {
             .attr("stroke", strokeColor)
             .attr("stroke-width", strokeWidth);
 
-        globeWireframe.append("circle")
+        globeWireframe
+            .append("circle")
             .attr("transform", `translate(${projection(northPole)})`)
             .attr("r", 4)
             .attr("fill", circleColor)
@@ -230,33 +249,29 @@ export default class GlobeWireFrame {
             .append("g")
             .attr("class", "circle-group");
 
-      
         this.addAnimations(container);
 
-
         const pointGroups = circleGroup
-        .selectAll("g.point-group")
-        .data(
-            circleData.filter((d) => {
-                const [lng, lat] = d.geometry.coordinates;
-                return specificIntersections.some(
-                    (point) =>
-                        Math.abs(lat - point.lat) < tolerance &&
-                        Math.abs(lng - point.lng) < tolerance
-                );
-            })
-        )
-        .enter()
-        .append("g")
-        .attr("class", (d, i) => `point-group point-group-${i+1}`)
-        .attr("transform", (d) => {
-            const point = projection(d.geometry.coordinates);
-            return point ? `translate(${point[0]}, ${point[1]})` : null;
-        });
+            .selectAll("g.point-group")
+            .data(
+                circleData.filter((d) => {
+                    const [lng, lat] = d.geometry.coordinates;
+                    return specificIntersections.some(
+                        (point) =>
+                            Math.abs(lat - point.lat) < tolerance &&
+                            Math.abs(lng - point.lng) < tolerance
+                    );
+                })
+            )
+            .enter()
+            .append("g")
+            .attr("class", (d, i) => `point-group point-group-${i + 1}`)
+            .attr("transform", (d) => {
+                const point = projection(d.geometry.coordinates);
+                return point ? `translate(${point[0]}, ${point[1]})` : null;
+            });
 
-
-
-        pointGroups.each(function(d, i) {
+        pointGroups.each(function (d, i) {
             const coordinates = d.geometry.coordinates;
             if (coordinates) {
                 // Create a GeoJSON LineString feature for a great-circle arc
@@ -266,38 +281,40 @@ export default class GlobeWireFrame {
                         type: "LineString",
                         coordinates: [
                             northPole, // Start at north pole
-                            coordinates // End at target point
-                        ]
-                    }
+                            coordinates, // End at target point
+                        ],
+                    },
                 };
-        
+
                 // Create a path that follows the globe's curvature
-                globeWireframe.append("path")
+                globeWireframe
+                    .append("path")
                     .datum(arcFeature)
                     .attr("d", wireframe)
-                    .attr("class", `animated-line animated-line-${i+1}`)
-                    .attr("stroke-dasharray", function() { 
+                    .attr("class", `animated-line animated-line-${i + 1}`)
+                    .attr("stroke-dasharray", function () {
                         return this.getTotalLength(); // Get actual path length
                     })
-                    .attr("stroke-dashoffset", function() { 
+                    .attr("stroke-dashoffset", function () {
                         return this.getTotalLength(); // Initial offset equal to length
                     });
             }
         });
 
-        pointGroups.append("circle")
-        .attr("class", "circle-static")
-        .attr("r", circleRadius)
-        .attr("fill", circleColor)
-        .attr("stroke", circleStrokeColor)
-        .attr("stroke-width", circleStrokeWidth);
+        pointGroups
+            .append("circle")
+            .attr("class", "circle-static")
+            .attr("r", circleRadius)
+            .attr("fill", circleColor)
+            .attr("stroke", circleStrokeColor)
+            .attr("stroke-width", circleStrokeWidth);
 
         for (let i = 0; i < 3; i++) {
-            pointGroups.append("circle")
+            pointGroups
+                .append("circle")
                 .attr("class", "wave-ring")
                 .attr("r", circleRadius)
                 .attr("stroke-width", circleStrokeWidth);
         }
-       
     }
 }
