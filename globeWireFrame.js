@@ -66,48 +66,11 @@ export default class GlobeWireFrame {
                 stroke-dashoffset: 1000;
                 animation: drawLine 6s infinite;
             }
-            
-            // .animated-line-1 {
-            //     animation: drawLine 4s infinite;
-            // }
-            
-            // .animated-line-2 {
-            //     animation: drawLine 4s infinite 0.8s;
-            // }
-            
-            // .animated-line-3 {
-            //     animation: drawLine 4s infinite 1.6s;
-            // }
-            
-            // .animated-line-4 {
-            //     animation: drawLine 4s infinite 2.4s;
-            // }
-            
-            // .animated-line-5 {
-            //     animation: drawLine 4s infinite 3.2s;
-            // }
-
-        
-            
             .point-group .wave-ring:nth-child(2) { animation: wave 6s 0.8s infinite; }
             .point-group .wave-ring:nth-child(3) { animation: wave 6s 1.3s infinite; }
             .point-group .wave-ring:nth-child(4) { animation: wave 6s 1.8s infinite; }
             
-            // .point-group-2 .wave-ring:nth-child(2) { animation: wave 2s 1.6s infinite; }
-            // .point-group-2 .wave-ring:nth-child(3) { animation: wave 2s 2.1s infinite; }
-            // .point-group-2 .wave-ring:nth-child(4) { animation: wave 2s 2.6s infinite; }
-            
-            // .point-group-3 .wave-ring:nth-child(2) { animation: wave 2s 2.4s infinite; }
-            // .point-group-3 .wave-ring:nth-child(3) { animation: wave 2s 2.9s infinite; }
-            // .point-group-3 .wave-ring:nth-child(4) { animation: wave 2s 3.4s infinite; }
-            
-            // .point-group-4 .wave-ring:nth-child(2) { animation: wave 2s 3.2s infinite; }
-            // .point-group-4 .wave-ring:nth-child(3) { animation: wave 2s 3.7s infinite; }
-            // .point-group-4 .wave-ring:nth-child(4) { animation: wave 2s 4.2s infinite; }
-            
-            // .point-group-5 .wave-ring:nth-child(2) { animation: wave 2s 4.0s infinite; }
-            // .point-group-5 .wave-ring:nth-child(3) { animation: wave 2s 4.5s infinite; }
-            // .point-group-5 .wave-ring:nth-child(4) { animation: wave 2s 5.0s infinite; }
+         
         `;
         container.appendChild(style);
     }
