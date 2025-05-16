@@ -1,0 +1,89 @@
+
+:root {
+    --typingWrapperWidth : 80px;
+}
+
+body {
+    background-color: black;;
+}
+
+
+.mGlobe {
+    svg {
+        mask-image: linear-gradient(black,transparent);
+    }
+}
+
+.mTypingWrapper {
+    background-color: black;
+    max-width: var(--typingWrapperWidth);
+    width: 100%;
+    color: white;
+    padding: 5px 10px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    min-height: 20px;
+    transition: max-width 0.3s ease-in-out;
+    margin-inline : auto;
+    -webkit-text-fill-color : white;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.mTypingInner {
+    width: fit-content;
+    min-height: 20px;
+}
+
+.mTypingAnimation {
+    animation: 
+        mTyping 1s steps(10) forwards,
+        mBlinkCaret .75s step-end infinite;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: .15em solid white;
+    width: 0;   
+    min-height: 20px;
+}
+
+.mTypingStart {
+    width : 10px;
+    min-height: 20px;
+    background-color: white;
+    display: none;
+    animation: mBlinkBox 1s step-end infinite;
+}
+
+.mTypingWrapper.mStart {
+    max-width : 10px;
+}
+
+.mTypingWrapper.mStart .mTypingAnimation {
+    display: none;
+}
+
+.mTypingWrapper.mStart .mTypingStart {
+    display: block;
+}
+
+.mTypingWrapper.mEnd .mTypingAnimation, .mTypingWrapper.mEnd .mTypingAnimation {
+    display: none;
+}
+
+@keyframes mTyping {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes mBlinkCaret {
+    from, to { border-color: transparent; }
+    50% { border-color: white; }
+}
+
+@keyframes mBlinkBox {
+    from, to { background-color: transparent; }
+    50% { background-color: white; }
+}
